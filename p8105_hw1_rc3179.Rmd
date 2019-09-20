@@ -69,7 +69,7 @@ The dataframe created above has size of `r nrow(p2_df)` rows and `r ncol(p2_df)`
 The mean of x is `r mean(pull(p2_df,x))`, median of x is `r median(pull(p2_df,x))`, and the standard deviation of x is `r sd(pull(p2_df,x))`
 The proportion of cases for which x + y > 1 is `r mean(pull(p2_df,greater_one))`
 
-##Scatterplots
+## Scatterplots
 ```{r}
 #Scatterplot by logic
 logic_color_plot = ggplot(p2_df, aes(x = x, y = y, color = greater_one)) + geom_point()

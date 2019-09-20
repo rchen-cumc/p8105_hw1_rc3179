@@ -8,7 +8,7 @@ output: github_document
 # Problem 1
 
 Creating a data frame with random sample of size 8 from a standard Normal distribution, logical vector indicating whether elements of the sample are greater than 0, character vector of length 8, factor vector of length 8, with 3 different factor “levels”
-Code chunk with messages off
+(Code chunk with messages off)
 ```{r, message = FALSE}
 library(tidyverse)
 p1_df = tibble (
@@ -18,7 +18,7 @@ p1_df = tibble (
   factor_vect = factor(c("low","medium","high","low","medium","high","low","medium"))
 )
 ```
-Attempting to take the mean of each type of vector:
+**Attempting to take the mean of each type of vector:**
 
 The mean of numeric vector sample is `r mean(pull(p1_df, sample))`
 
@@ -30,15 +30,16 @@ The mean of factor vector factor_vect is `r mean(pull(p1_df, factor_vect))`
 
 Mean works for numeric and logical vectors but not for charactor or factor vectors, which returns NA instead
 
-Code chunk to convert logical, character, and factor variables to numeric (code chunk shown but no results)
+Code chunk to convert logical, character, and factor variables to numeric (code chunk shown but no results):
 ```{r, eval = FALSE}
 as.numeric(pull(p1_df, logic_vect))
 as.numeric(pull(p1_df, char_vect))
 as.numeric(pull(p1_df, factor_vect))
 ```
 
-Logical vectors convert to 0s and 1s, character vectors throw an error and instead returns NA, and factor vectors convert to numbers for the various 'levels' (in this case 1, 2, 3)
+Logical vectors convert to 0s and 1s, character vectors throw an error and instead returns NA, and factor vectors convert to numbers for the various 'levels' (in this case 1, 2, 3) based on alphabetical order. This does explain why the mean does not work, as character vectors cannot conver to numeric and while factor vectors can convert to numeric, these are categorical variables which are assigned numbers alphabetically and taking the mean of categorical variable is not meaningful
 
+**Second code chunk** to convert the logical vector to numeric, and multiply the random sample by the result, convert the logical vector to a factor, and multiply the random sample by the result, and convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
 ```{r}
 pull(p1_df, sample)*as.numeric(pull(p1_df, logic_vect))
 pull(p1_df, sample)*as.factor(pull(p1_df, logic_vect))
@@ -48,3 +49,38 @@ pull(p1_df, sample)*as.numeric(as.factor((pull(p1_df, logic_vect))))
 
 # Problem 2
 
+Create a data frame comprised of:
+x: a random sample of size 500 from a standard Normal distribution
+y: a random sample of size 500 from a standard Normal distribution
+A logical vector indicating whether x + y > 1
+A numeric vector created by coercing the above logical vector
+A factor vector created by coercing the above logical vector
+```{r}
+p2_df = tibble(
+  x = rnorm(500),
+  y = rnorm(500),
+  greater_one = (x + y) > 1,
+  nvec_greater_one = as.numeric(greater_one),
+  fvec_greater_one = as.factor(greater_one)
+)
+```
+
+The dataframe created above has size of `r nrow(p2_df)` rows and `r ncol(p2_df)` columns. 
+The mean of x is `r mean(pull(p2_df,x))`, median of x is `r median(pull(p2_df,x))`, and the standard deviation of x is `r sd(pull(p2_df,x))`
+The proportion of cases for which x + y > 1 is `r mean(pull(p2_df,greater_one))`
+
+##Scatterplots
+```{r}
+#Scatterplot by logic
+logic_color_plot = ggplot(p2_df, aes(x = x, y = y, color = greater_one)) + geom_point()
+logic_color_plot
+#Scatterplot by numeric
+num_color_plot = ggplot(p2_df, aes(x = x, y = y, color = nvec_greater_one)) + geom_point()
+num_color_plot
+#Scatterplot by factor
+factor_color_plot = ggplot(p2_df, aes(x = x, y = y, color = fvec_greater_one)) + geom_point()
+factor_color_plot
+
+ggsave(filename = "logic_color_plot.png", plot = logic_color_plot)
+```
+Color scales based on the logical vector and the factor vector are both the same, with one color for TRUE and another for FALSE. When using the numeric vector, the color scale in the legend has a spectrum from dark for 0.00 to lighter blue for 1.00. However since the values are either 0 or 1 there are really still only 2 colors displayed on the plot

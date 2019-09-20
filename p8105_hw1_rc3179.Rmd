@@ -1,30 +1,50 @@
 ---
-title: "Untitled"
+title: "Homework 1"
+author: "RuiJun Chen"
+date: 2019-09-17
 output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# Problem 1
+
+Creating a data frame with random sample of size 8 from a standard Normal distribution, logical vector indicating whether elements of the sample are greater than 0, character vector of length 8, factor vector of length 8, with 3 different factor “levels”
+Code chunk with messages off
+```{r, message = FALSE}
+library(tidyverse)
+p1_df = tibble (
+  sample = rnorm(8),
+  logic_vect = sample > 0,
+  char_vect = c("a","b","c","d","e","f","g","h"),
+  factor_vect = factor(c("low","medium","high","low","medium","high","low","medium"))
+)
+```
+Attempting to take the mean of each type of vector:
+
+The mean of numeric vector sample is `r mean(pull(p1_df, sample))`
+
+The mean of logical vector logic_vect is `r mean(pull(p1_df, logic_vect))`
+
+The mean of character vector char_vect is `r mean(pull(p1_df, char_vect))`
+
+The mean of factor vector factor_vect is `r mean(pull(p1_df, factor_vect))`
+
+Mean works for numeric and logical vectors but not for charactor or factor vectors, which returns NA instead
+
+Code chunk to convert logical, character, and factor variables to numeric (code chunk shown but no results)
+```{r, eval = FALSE}
+as.numeric(pull(p1_df, logic_vect))
+as.numeric(pull(p1_df, char_vect))
+as.numeric(pull(p1_df, factor_vect))
 ```
 
-## GitHub Documents
+Logical vectors convert to 0s and 1s, character vectors throw an error and instead returns NA, and factor vectors convert to numbers for the various 'levels' (in this case 1, 2, 3)
 
-This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
-
-## Including Code
-
-You can include R code in the document as follows:
-
-```{r cars}
-summary(cars)
+```{r}
+pull(p1_df, sample)*as.numeric(pull(p1_df, logic_vect))
+pull(p1_df, sample)*as.factor(pull(p1_df, logic_vect))
+pull(p1_df, sample)*as.numeric(as.factor((pull(p1_df, logic_vect))))
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+# Problem 2
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
